@@ -1,0 +1,25 @@
+
+POST http://localhost:3001/api/blogs
+content-type: application/json
+
+{
+    "title": "How to create an android app",
+    "author": "Shiva Tiwari",
+    "url":"not available",
+    "likes":"200"
+}
+
+
+###
+DELETE http://localhost:3001/api/blogs/5fdb7cac969f1c9a31f60a98
+
+###
+PUT http://localhost:3001/api/blogs/5fdb7e03c881ec9bb7361ccc
+content-type: application/json
+
+{
+    "title": "new Updated",
+    "author": "Shiva",
+    "url":"available",
+    "likes":"300"
+}
