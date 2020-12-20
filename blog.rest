@@ -1,25 +1,30 @@
 
 POST http://localhost:3001/api/blogs
 content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNoaXZhY2hpdCIsImlkIjoiNWZkZTczMzgyMjQ5YzM0MmJhOWRiMjZlIiwiaWF0IjoxNjA4NDcyNjM1fQ.LMRKIFXRLwoD2bVqwNE6tzDRiH7bG5P_Yf3im2oK3Ko
 
 {
-    "title": "How to create an android app",
+    "title": "How to create an asdasdasdsa Website",
     "author": "Shiva Tiwari",
     "url":"not available",
-    "likes":"200"
+    "likes":200,
+    "userId":"5fde73382249c342ba9db26e"
 }
 
 
 ###
-DELETE http://localhost:3001/api/blogs/5fdb7cac969f1c9a31f60a98
+DELETE http://localhost:3001/api/blogs/5fdf7f0df2b158780663267
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNoaXZhY2hpdCIsImlkIjoiNWZkZTczMzgyMjQ5YzM0MmJhOWRiMjZlIiwiaWF0IjoxNjA4NDcyNjM1fQ.LMRKIFXRLwoD2bVqwNE6tzDRiH7bG5P_Yf3im2oK3Ko
+
 
 ###
-PUT http://localhost:3001/api/blogs/5fdb7e03c881ec9bb7361ccc
+PUT http://localhost:3001/api/blogs/5fdb812a5277719d1012f792
 content-type: application/json
 
 {
     "title": "new Updated",
     "author": "Shiva",
     "url":"available",
-    "likes":"300"
+    "likes":300
 }
+

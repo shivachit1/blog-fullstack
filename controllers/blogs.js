@@ -1,64 +1,125 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
-blogsRouter.get('/', (req, res) => {
-  Blog.find({}).then(blogs => {
-    res.json(blogs)
-  })
+// getting all blogs with join query which return blogs with user's details
+blogsRouter.get('/',async (req, res) => {
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
+  res.json(blogs)
 })
 
-blogsRouter.get('/:id', (req, res, next) => {
-  Blog.findById(req.params.id)
-    .then(blog => {
-      if (blog) {
-        res.json(blog)
-      } else {
-        res.status(404).end()
-      }
-    })
-    .catch(error => next(error))
+// getting single blogs from the database
+blogsRouter.get('/:id', async (req, res, next) => {
+  try{
+    const blog = await Blog.findById(req.params.id)
+
+    if (blog) {
+      res.json(blog)
+    } else {
+      res.status(404).end()
+    }
+
+  }catch (exception) {
+    next(exception)
+  }
+
 })
 
-blogsRouter.post('/', (req, res, next) => {
+// creating new blogs with given req data
+blogsRouter.post('/', async (req, res, next) => {
+
   const body = req.body
 
+  // getting token from authorization header , middleware function (middleware.tokenExtractor) helps to assign token to req.token
+  const token = req.token
+
+  // decoding token with jwt
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!token || !decodedToken.id) {
+    return res.status(401).json({ error: 'token missing or invalid' })
+  }
+  //finding user with decoded token
+  const user = await User.findById(decodedToken.id)
+
+  // creating new blog with extra user field
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url:body.url,
-    likes:body.likes
+    likes:body.likes,
+    user:user._id
   })
 
-  blog.save()
-    .then(savedBlog => {
-      res.json(savedBlog)
-    })
-    .catch(error => next(error))
+  try {
+
+    const savedBlog = await blog.save()
+    // creating blogs reference to user object
+    user.blogs = user.blogs.concat(savedBlog._id)
+    await user.save()
+
+    res.json(savedBlog)
+
+  } catch (exception) {
+    next(exception)
+  }
+
 })
 
-blogsRouter.delete('/:id', (req, res, next) => {
-  Blog.findByIdAndRemove(req.params.id)
-    .then(() => {
+// deleting single blogs by given id
+blogsRouter.delete('/:id',async (req, res, next) => {
+  const blogId = req.params.id
+  const token = req.token
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!token || !decodedToken.id) {
+    return res.status(401).json({ error: 'token missing or invalid' })
+  }
+  const userId = decodedToken.id
+
+  try {
+    const blog = await Blog.findById(blogId)
+    if(blog.user.toString() === userId.toString()){
+      await Blog.findByIdAndRemove(req.params.id)
       res.status(204).end()
-    })
-    .catch(error => next(error))
+    }
+  } catch (exception) {
+    next(exception)
+  }
+
 })
 
-blogsRouter.put('/:id', (req, res, next) => {
+// updating blogs with given id and req data
+blogsRouter.put('/:id', async (req, res, next) => {
   const body = req.body
+  const blogId = req.params.id
+  const token = req.token
+
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!token || !decodedToken.id) {
+    return res.status(401).json({ error: 'token missing or invalid' })
+  }
+  const userId = decodedToken.id
 
   const blog = {
     title: body.title,
     author: body.author,
     url:body.url,
-    likes:body.likes
+    likes:body.likes,
+    user:userId
   }
 
-  Blog.findByIdAndUpdate(req.params.id, blog, { new: true })
-    .then(updatedBlog => {
+  try {
+    const blogTobeUpdated = await Blog.findById(blogId)
+
+    //only updating if blog is created by logged user (user is retrieve using token by jwt)
+    if(blogTobeUpdated.user.toString() === userId.toString()){
+      const updatedBlog = await Blog.findByIdAndUpdate(blogId, blog, { new: true })
       res.json(updatedBlog)
-    })
-    .catch(error => next(error))
+    }
+  } catch (exception) {
+    next(exception)
+  }
+
 })
 
 module.exports = blogsRouter
