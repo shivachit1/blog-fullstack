@@ -6,7 +6,6 @@ const User  = require('../models/user')
 // login routes for user authentication
 loginRouter.post('/', async (req, res) => {
   const body = req.body
-
   // finding user from database with given username in req object
   const user = await User.findOne({ username:body.username })
   const passwordCorrect = user === null

@@ -291,7 +291,6 @@ describe('updating of a blog', () => {
     // updating the likes of previously created blog with 130 likes by authorized user
     const updatedResponse = await api
       .put(`/api/blogs/${blogToUpdate.id}`)
-      .set({ Authorization:`Bearer ${token}` })
       .send(blogToUpdate)
 
     // testing if likes is sucessfully update and equals to 130

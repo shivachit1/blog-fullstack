@@ -81,6 +81,8 @@ blogsRouter.delete('/:id',async (req, res, next) => {
     if(blog.user.toString() === userId.toString()){
       await Blog.findByIdAndRemove(req.params.id)
       res.status(204).end()
+    }else{
+      res.status(401).end()
     }
   } catch (exception) {
     next(exception)
@@ -92,30 +94,21 @@ blogsRouter.delete('/:id',async (req, res, next) => {
 blogsRouter.put('/:id', async (req, res, next) => {
   const body = req.body
   const blogId = req.params.id
-  const token = req.token
 
-  const decodedToken = jwt.verify(token, process.env.SECRET)
-  if (!token || !decodedToken.id) {
-    return res.status(401).json({ error: 'token missing or invalid' })
-  }
-  const userId = decodedToken.id
 
   const blog = {
     title: body.title,
     author: body.author,
     url:body.url,
     likes:body.likes,
-    user:userId
+    user:body.user
   }
 
   try {
-    const blogTobeUpdated = await Blog.findById(blogId)
 
-    //only updating if blog is created by logged user (user is retrieve using token by jwt)
-    if(blogTobeUpdated.user.toString() === userId.toString()){
-      const updatedBlog = await Blog.findByIdAndUpdate(blogId, blog, { new: true })
-      res.json(updatedBlog)
-    }
+    const updatedBlog = await Blog.findByIdAndUpdate(blogId, blog, { new: true })
+    res.json(updatedBlog)
+
   } catch (exception) {
     next(exception)
   }
