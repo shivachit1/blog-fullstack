@@ -277,22 +277,29 @@ describe('updating of a blog', () => {
     }
 
     // creating new blog in order to test updating on same blog
+    // response.body contains also creater username, name and id
     const response = await api
       .post('/api/blogs')
       .set({ Authorization:`Bearer ${token}` })
       .send(newBlog)
 
-    // blog object after creating
-    const blogToUpdate = response.body
+    // valid id of newly created blog
+    const validId = response.body.id
 
     // blog value create with 120 likes is increased by 10
-    blogToUpdate.likes +=10
+    const blogToUpdate = {
+      title:response.body.title,
+      author:response.body.author,
+      url:response.body.url,
+      likes:response.body.likes + 10,
+      user:response.body.user.id
+    }
 
     // updating the likes of previously created blog with 130 likes by authorized user
     const updatedResponse = await api
-      .put(`/api/blogs/${blogToUpdate.id}`)
+      .put(`/api/blogs/${validId}`)
       .send(blogToUpdate)
-
+    console.log(updatedResponse.body)
     // testing if likes is sucessfully update and equals to 130
     expect(updatedResponse.body.likes).toEqual(130)
   })

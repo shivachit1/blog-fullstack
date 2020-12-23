@@ -54,11 +54,12 @@ blogsRouter.post('/', async (req, res, next) => {
   try {
 
     const savedBlog = await blog.save()
+    const returningBlog = await Blog.findById(savedBlog._id).populate('user', { username: 1, name: 1 })
     // creating blogs reference to user object
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
 
-    res.json(savedBlog)
+    res.json(returningBlog)
 
   } catch (exception) {
     next(exception)
@@ -106,7 +107,7 @@ blogsRouter.put('/:id', async (req, res, next) => {
 
   try {
 
-    const updatedBlog = await Blog.findByIdAndUpdate(blogId, blog, { new: true })
+    const updatedBlog = await Blog.findByIdAndUpdate(blogId, blog, { new: true }).populate('user', { username: 1, name: 1 })
     res.json(updatedBlog)
 
   } catch (exception) {
