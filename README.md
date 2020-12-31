@@ -8,3 +8,9 @@
 <h3>Backend: </h3>
 <p>Backend is built using <strong>MongoDB</strong> , <strong>Express</strong> and <strong>Node.js</strong>. Other libraries used are <strong>Jest, supertest, JWT, Eslint, lodash, mongoose, cors</strong> and many more  </p>
 <p>This project except (build folder) is carried out to get hand on building server application from ground level. It is answer to exercie part 4 provided by Helsinki UAS</p>
+<br/>
+<br/>
+<h4>Test purpose:</h4>
+<p>You can run test the app using following credential.</p>
+<h5>username: test2</h5>
+<h5>password: available</h5>
