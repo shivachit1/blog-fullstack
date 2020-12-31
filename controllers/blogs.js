@@ -48,7 +48,8 @@ blogsRouter.post('/', async (req, res, next) => {
     author: body.author,
     url:body.url,
     likes:body.likes,
-    user:user._id
+    user:user._id,
+    comments:[]
   })
 
   try {
@@ -58,6 +59,28 @@ blogsRouter.post('/', async (req, res, next) => {
     // creating blogs reference to user object
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
+
+    res.json(returningBlog)
+
+  } catch (exception) {
+    next(exception)
+  }
+
+})
+
+// creating new comments to the blog with given req data
+blogsRouter.post('/:id/comments', async (req, res, next) => {
+  const id = req.params.id
+  const comment = req.body.comment
+  console.log(comment)
+
+  try {
+    //finding blog with id
+    const blog = await Blog.findById(id)
+    blog.comments = blog.comments.concat(comment)
+    await blog.save()
+
+    const returningBlog = await Blog.findById(id).populate('user', { username: 1, name: 1 })
 
     res.json(returningBlog)
 

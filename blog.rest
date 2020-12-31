@@ -18,13 +18,14 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNoa
 
 
 ###
-PUT http://localhost:3001/api/blogs/5fdb812a5277719d1012f792
+PUT http://localhost:3001/api/blogs/5fdf585fbc76e96661dfcb05
 content-type: application/json
 
 {
     "title": "new Updated",
     "author": "Shiva",
     "url":"available",
-    "likes":300
+    "likes":300,
+    "user":"5fde73382249c342ba9db26e"
 }
 
