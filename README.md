@@ -12,5 +12,5 @@
 <br/>
 <h4>Test purpose:</h4>
 <p>You can run test the app using following credential.</p>
-<h5>username: test2</h5>
+<h5>username: test1</h5>
 <h5>password: available</h5>
